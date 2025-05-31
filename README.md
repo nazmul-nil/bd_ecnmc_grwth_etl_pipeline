@@ -1,6 +1,8 @@
 # Project Title: “Bangladesh Economic Growth ETL Pipeline”
 
 ## Project Structure
+bash
+```
 bangladesh_econ_pipeline/
 │
 ├── data/                   # raw and processed CSVs
@@ -14,3 +16,4 @@ bangladesh_econ_pipeline/
 │
 ├── requirements.txt       # libraries used
 └── README.md
+```
