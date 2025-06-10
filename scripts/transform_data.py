@@ -31,23 +31,23 @@ class BangladeshDataTransformer:
     def load_raw_data(self):
         """Load raw data from API ingestion"""
         try:
-            print("📥 Loading raw data...")
+            print("Loading raw data...")
             self.df = pd.read_csv(self.input_path)
-            print(f"✅ Loaded {len(self.df)} records from {self.input_path}")
-            print(f"📊 Data shape: {self.df.shape}")
-            print(f"📅 Year range: {self.df['year'].min()} - {self.df['year'].max()}")
+            print(f"Loaded {len(self.df)} records from {self.input_path}")
+            print(f"Data shape: {self.df.shape}")
+            print(f"Year range: {self.df['year'].min()} - {self.df['year'].max()}")
             return True
         except FileNotFoundError:
-            print(f"❌ File not found: {self.input_path}")
-            print("💡 Run ingest_data.py first to fetch the raw data")
+            print(f"File not found: {self.input_path}")
+            print("Run ingest_data.py first to fetch the raw data")
             return False
         except Exception as e:
-            print(f"❌ Error loading data: {e}")
+            print(f"Error loading data: {e}")
             return False
     
     def validate_raw_data(self):
         """Validate raw data quality and structure"""
-        print("\n🔍 Validating raw data quality...")
+        print("\nValidating raw data quality...")
         
         # Check required columns
         required_cols = ['country_name', 'indicator_name', 'year', 'value']
@@ -60,7 +60,7 @@ class BangladeshDataTransformer:
         null_values = self.df['value'].isnull().sum()
         null_percentage = (null_values / total_records) * 100
         
-        print(f"📊 Data Quality Report:")
+        print(f"Data Quality Report:")
         print(f"   • Total records: {total_records:,}")
         print(f"   • Null values: {null_values:,} ({null_percentage:.1f}%)")
         print(f"   • Unique indicators: {self.df['indicator_name'].nunique()}")
@@ -69,19 +69,19 @@ class BangladeshDataTransformer:
         # Check for duplicates
         duplicates = self.df.duplicated(subset=['indicator_name', 'year']).sum()
         if duplicates > 0:
-            print(f"   ⚠️  Found {duplicates} duplicate records")
+            print(f"   Found {duplicates} duplicate records")
         else:
-            print(f"   ✅ No duplicates found")
+            print(f"   No duplicates found")
         
         # Validate year range
         if self.df['year'].min() < 1990 or self.df['year'].max() > 2030:
-            print(f"   ⚠️  Unusual year range detected")
+            print(f"   Unusual year range detected")
         else:
-            print(f"   ✅ Year range looks valid")
+            print(f"   Year range looks valid")
     
     def clean_data(self):
         """Clean and standardize the raw data"""
-        print("\n🧹 Cleaning data...")
+        print("\nCleaning data...")
         
         # Create a copy for processing
         df_clean = self.df.copy()
@@ -110,14 +110,14 @@ class BangladeshDataTransformer:
         # Sort by indicator and year
         df_clean = df_clean.sort_values(['indicator_name', 'year']).reset_index(drop=True)
         
-        print(f"   ✅ Cleaned data: {len(df_clean)} records remaining")
+        print(f"   Cleaned data: {len(df_clean)} records remaining")
         
         self.df_clean = df_clean
         return df_clean
     
     def create_features(self):
         """Create additional features and calculated metrics"""
-        print("\n⚙️ Creating features and calculated metrics...")
+        print("\nCreating features and calculated metrics...")
         
         df_features = self.df_clean.copy()
         
@@ -172,14 +172,14 @@ class BangladeshDataTransformer:
                     }
                     df_features = pd.concat([df_features, pd.DataFrame([new_row])], ignore_index=True)
         
-        print(f"   ✅ Added calculated features. Total records: {len(df_features)}")
+        print(f"   Added calculated features. Total records: {len(df_features)}")
         
         self.df_features = df_features
         return df_features
     
     def create_time_series_analysis(self):
         """Create time series analysis features"""
-        print("\n📈 Creating time series analysis features...")
+        print("\nCreating time series analysis features...")
         
         df_ts = self.df_features.copy()
         
@@ -211,14 +211,14 @@ class BangladeshDataTransformer:
                     }
                     df_ts = pd.concat([df_ts, pd.DataFrame([trend_row])], ignore_index=True)
         
-        print(f"   ✅ Added time series features. Total records: {len(df_ts)}")
+        print(f"   Added time series features. Total records: {len(df_ts)}")
         
         self.processed_df = df_ts
         return df_ts
     
     def generate_summary_statistics(self):
         """Generate summary statistics for quality assurance"""
-        print("\n📊 Generating summary statistics...")
+        print("\nGenerating summary statistics...")
         
         # Summary by indicator
         summary_stats = []
@@ -242,19 +242,19 @@ class BangladeshDataTransformer:
         summary_df = pd.DataFrame(summary_stats)
         summary_df = summary_df.round(3)
         
-        print("📋 Summary Statistics by Indicator:")
+        print("Summary Statistics by Indicator:")
         print(summary_df.to_string(index=False))
         
         return summary_df
     
     def save_processed_data(self):
         """Save processed data to CSV files"""
-        print("\n💾 Saving processed data...")
+        print("\nSaving processed data...")
         
         # Save main processed dataset
         main_output_path = os.path.join(PROCESSED_DIR, "bangladesh_economic_indicators_processed.csv")
         self.processed_df.to_csv(main_output_path, index=False)
-        print(f"   ✅ Saved main dataset: {main_output_path}")
+        print(f"   Saved main dataset: {main_output_path}")
         
         # Save wide format for analysis (pivot table)
         pivot_df = self.processed_df.pivot(index='year', columns='indicator_name', values='value')
@@ -262,13 +262,13 @@ class BangladeshDataTransformer:
         
         wide_output_path = os.path.join(PROCESSED_DIR, "bangladesh_economic_indicators_wide.csv")
         pivot_df.to_csv(wide_output_path, index=False)
-        print(f"   ✅ Saved wide format: {wide_output_path}")
+        print(f"   Saved wide format: {wide_output_path}")
         
         # Save summary statistics
         summary_stats = self.generate_summary_statistics()
         summary_output_path = os.path.join(PROCESSED_DIR, "bangladesh_data_summary.csv")
         summary_stats.to_csv(summary_output_path, index=False)
-        print(f"   ✅ Saved summary stats: {summary_output_path}")
+        print(f"   Saved summary stats: {summary_output_path}")
         
         return {
             'main_dataset': main_output_path,
@@ -278,7 +278,7 @@ class BangladeshDataTransformer:
     
     def run_transformation(self):
         """Run the complete transformation pipeline"""
-        print("🔄 Starting Bangladesh Economic Data Transformation Pipeline")
+        print("Starting Bangladesh Economic Data Transformation Pipeline")
         print("=" * 60)
         
         # Step 1: Load raw data
@@ -300,12 +300,12 @@ class BangladeshDataTransformer:
         # Step 6: Save processed data
         output_files = self.save_processed_data()
         
-        print("\n🎉 Transformation Complete!")
+        print("\nTransformation Complete!")
         print("=" * 60)
-        print(f"📊 Final dataset: {len(self.processed_df)} records")
-        print(f"📈 Indicators: {self.processed_df['indicator_name'].nunique()}")
-        print(f"📅 Years covered: {self.processed_df['year'].min()} - {self.processed_df['year'].max()}")
-        print("\n📁 Output files created:")
+        print(f"Final dataset: {len(self.processed_df)} records")
+        print(f"Indicators: {self.processed_df['indicator_name'].nunique()}")
+        print(f"Years covered: {self.processed_df['year'].min()} - {self.processed_df['year'].max()}")
+        print("\nOutput files created:")
         for file_type, file_path in output_files.items():
             print(f"   • {file_type}: {os.path.basename(file_path)}")
         
@@ -317,15 +317,14 @@ def main():
     success = transformer.run_transformation()
     
     if success:
-        print("\n✅ Data transformation successful!")
-        print("📋 Next steps:")
+        print("\nData transformation successful!")
+        print("Next steps:")
         print("   1. Review processed data files in data/processed/")
         print("   2. Run load_to_s3.py to upload to cloud storage")
         print("   3. Set up Prefect workflow for automation")
     else:
-        print("\n❌ Data transformation failed!")
-        print("💡 Check error messages above and ensure ingest_data.py was run first")
+        print("\nData transformation failed!")
+        print("Check error messages above and ensure ingest_data.py was run first")
 
 if __name__ == "__main__":
     main()
-

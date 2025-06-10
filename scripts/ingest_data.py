@@ -51,22 +51,22 @@ def fetch_wb_indicator(indicator_code, country_code="BGD", start_year=2000, end_
             return None
             
     except requests.exceptions.RequestException as e:
-        print(f"    ❌ HTTP Error: {e}")
+        print(f"    HTTP Error: {e}")
         return None
     except json.JSONDecodeError as e:
-        print(f"    ❌ JSON Error: {e}")
+        print(f"    JSON Error: {e}")
         return None
 
 def main():
     """
     Fetch Bangladesh economic indicators using direct API calls
     """
-    print("📡 Fetching Bangladesh data from World Bank API (direct HTTP)...")
+    print("Fetching Bangladesh data from World Bank API (direct HTTP)...")
     
     all_records = []
     
     for indicator_code, indicator_name in indicators.items():
-        print(f"  📊 Fetching {indicator_name} ({indicator_code})...")
+        print(f"  Fetching {indicator_name} ({indicator_code})...")
         
         data = fetch_wb_indicator(indicator_code)
         
@@ -82,18 +82,18 @@ def main():
                         'value': record.get('value')
                     })
             
-            print(f"    ✅ Success: {len([r for r in data if r.get('value') is not None])} valid records")
+            print(f"    Success: {len([r for r in data if r.get('value') is not None])} valid records")
         else:
-            print(f"    ⚠️  No data returned for {indicator_name}")
+            print(f"    No data returned for {indicator_name}")
         
         time.sleep(0.5)  # Be respectful to the API
     
     if not all_records:
-        print("❌ No data was fetched successfully")
+        print("No data was fetched successfully")
         return
     
     # Create DataFrame
-    print(f"\n🔄 Processing {len(all_records)} records...")
+    print(f"\nProcessing {len(all_records)} records...")
     df = pd.DataFrame(all_records)
     
     # Clean and sort
@@ -105,14 +105,14 @@ def main():
     df.to_csv(output_path, index=False)
     
     # Print summary
-    print(f"✅ Saved {len(df)} records to: {output_path}")
-    print(f"📊 Coverage: {df['year'].min()}-{df['year'].max()}")
-    print(f"📈 Indicators: {df['indicator_name'].nunique()}")
+    print(f"Saved {len(df)} records to: {output_path}")
+    print(f"Coverage: {df['year'].min()}-{df['year'].max()}")
+    print(f"Indicators: {df['indicator_name'].nunique()}")
     
-    print("\n📋 Sample data:")
+    print("\nSample data:")
     print(df.head(8))
     
-    print(f"\n📊 Records per indicator:")
+    print(f"\nRecords per indicator:")
     indicator_counts = df.groupby('indicator_name').size().sort_values(ascending=False)
     print(indicator_counts)
 

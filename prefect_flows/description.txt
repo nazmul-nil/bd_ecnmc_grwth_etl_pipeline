@@ -1,1 +1,20 @@
 This folder will contain Prefect orchestration scripts.
+## 🤖 **Orchestration & Automation**
+
+### **4. prefect_flows/pipeline_flow.py**
+**Purpose**: Workflow orchestration and automation  
+**Dependencies**: All three core scripts above  
+**Output**: Automated, monitored pipeline execution
+
+**Workflow Features:**
+- **Task Dependencies**: Ensures proper execution order (Extract → Transform → Load)
+- **Error Handling**: Automatic retries with exponential backoff
+- **Monitoring**: Real-time pipeline status and logging
+- **Scheduling**: Configurable daily/weekly/monthly runs
+- **Data Quality Validation**: Automated quality checks between stages
+
+**Production Capabilities:**
+- **Parallel Execution**: Can process multiple countries simultaneously
+- **Failure Recovery**: Resumes from last successful step
+- **Alerting**: Email/Slack notifications for failures
+- **Performance Metrics**: Execution time and resource usage tracking

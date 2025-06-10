@@ -1,0 +1,11 @@
+{
+  "backup_timestamp": "20250610_034903",
+  "files_backed_up": [
+    "bangladesh_economic_indicators_processed.csv",
+    "bangladesh_economic_indicators_wide.csv",
+    "bangladesh_data_summary.csv",
+    "bangladesh_economic_data.db"
+  ],
+  "total_files": 4,
+  "backup_location": "c:\\users\\nazmu\\onedrive - university of hertfordshire\\documents\\python scripts\\bd_ecnmc_grwth_etl_pipeline\\data\\backups\\20250610_034903"
+}
